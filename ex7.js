@@ -15,8 +15,6 @@
 
 // Make it case-insensitive.
 
-function getSimilarProducts(products, similarity) {}
-
 const products = [
   "Wireless Bluetooth Headphones",
   "Bluetooth Wireless Earbuds",
@@ -55,6 +53,38 @@ function getSimilarProducts(products, similarityThreshold) {
 
       const minLength = Math.min(firstSet.size, secondSet.size);
       const similarity = sharedCount / minLength;
+
+      if (similarity >= similarityThreshold) {
+        result.push({
+          productOne: products[i],
+          productTwo: products[j],
+          similarity: parseFloat(similarity.toFixed(2)),
+        });
+      }
+    }
+  }
+
+  return result;
+}
+
+// Second solution with Set
+
+function getSimilarProducts(products, similarityThreshold) {
+  const result = [];
+
+  const wordSets = products.map(
+    (title) => new Set(title.toLowerCase().split(/\s+/))
+  );
+
+  for (let i = 0; i < products.length; i++) {
+    for (let j = i + 1; j < products.length; j++) {
+      const firstSet = wordSets[i];
+      const secondSet = wordSets[j];
+
+      const sharedWords = [...firstSet].filter(word => secondSet.has(word)); // set approach
+
+      const minLength = Math.min(firstSet.size, secondSet.size);
+      const similarity = sharedWords.length / minLength;
 
       if (similarity >= similarityThreshold) {
         result.push({
