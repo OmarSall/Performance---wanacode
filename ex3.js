@@ -133,19 +133,20 @@ const companies = [
 ];
 
 function getCompaniesWithEmployees(companies, employees) {
-  const companyMap = companies.reduce((acc, company) => {
-    acc[company.id] = { company, employees: [] };
-    return acc;
-  }, {});
+  const companyMap = new Map();
 
-  for (const employee of employees) {
-    const { id, name, job, companyId } = employee;
-    if (companyMap[companyId]) {
-      companyMap[companyId].employees.push({ id, name, job, companyId });
+  for (const company of companies) {
+    companyMap.set(company.id, { ...company, employees: [] });
+  }
+
+  for (const { id, name, job, companyId } of employees) {
+    const company = companyMap.get(companyId);
+    if (company) {
+      company.employees.push({ id, name, job, companyId });
     }
   }
 
-  return companyMap;
+  return Array.from(companyMap.values());
 }
 
 const companiesWithEmployees = getCompaniesWithEmployees(companies, employees);
